@@ -1,0 +1,10 @@
+# Terraform state
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# Secrets
+*.json
+
+# Sensitive vars
+terraform.tfvars
