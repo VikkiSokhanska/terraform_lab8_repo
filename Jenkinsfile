@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-sa-key') 
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('terraform_sa_key') 
     }
 
     stages {
