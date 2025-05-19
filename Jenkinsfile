@@ -1,10 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('terraform-sa-key') 
-    }
-
     stages {
         stage('Clone') {
             steps {
@@ -14,21 +10,37 @@ pipeline {
 
         stage('Terraform Init') {
             steps {
-                sh 'terraform init'
+                withCredentials([file(credentialsId: 'terraform-sa-key', variable: 'GOOGLE_CREDENTIALS')]) {
+                    sh '''
+                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CREDENTIALS
+                        terraform init
+                    '''
+                }
             }
         }
 
         stage('Terraform Plan') {
             steps {
-                sh 'terraform plan'
+                withCredentials([file(credentialsId: 'terraform-sa-key', variable: 'GOOGLE_CREDENTIALS')]) {
+                    sh '''
+                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CREDENTIALS
+                        terraform plan
+                    '''
+                }
             }
         }
 
         stage('Terraform Apply') {
             steps {
                 input message: 'Apply changes?'
-                sh 'terraform apply -auto-approve'
+                withCredentials([file(credentialsId: 'terraform-sa-key', variable: 'GOOGLE_CREDENTIALS')]) {
+                    sh '''
+                        export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CREDENTIALS
+                        terraform apply -auto-approve
+                    '''
+                }
             }
         }
     }
 }
+
